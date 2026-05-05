@@ -63,13 +63,27 @@ MODULE     = "SyndicAIVault"
 # Poll interval (seconds)
 POLL_INTERVAL = 10
 
-# ── Mock oracle data ───────────────────────────────────────────────────────────
-_ORACLE = {
-    "usRepoRate7d":    Decimal("5.32"),
-    "giltsRate7d":     Decimal("4.78"),
-    "sofr":            Decimal("5.31"),
-    "volatilityIndex": Decimal("0.18"),
-}
+# ── Mock oracle data (simulated live market feed) ─────────────────────────────
+import random
+
+def get_oracle() -> dict:
+    """Simulates a live oracle feed with small market fluctuations each poll."""
+    base_repo = Decimal("5.32")
+    base_gilts = Decimal("4.78")
+    base_sofr = Decimal("5.31")
+    base_vol = Decimal("0.18")
+
+    # Add ±0.05% random noise to simulate live market movement
+    def jitter(base: Decimal, spread: float = 0.05) -> Decimal:
+        delta = Decimal(str(round(random.uniform(-spread, spread), 4)))
+        return (base + delta).quantize(Decimal("0.0001"))
+
+    return {
+        "usRepoRate7d":    jitter(base_repo),
+        "giltsRate7d":     jitter(base_gilts),
+        "sofr":            jitter(base_sofr),
+        "volatilityIndex": jitter(base_vol, 0.02),
+    }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -233,12 +247,16 @@ def run_ai_inference(vault: dict[str, Any]) -> dict[str, str]:
     Deterministic AI oracle model (ready for LLM / Chainlink upgrade).
     Returns string decimals matching the Proposal template fields.
     """
-    target_tvl = Decimal(str(vault.get("targetTVL", "10000000")))
+    oracle = get_oracle()  # Fresh market snapshot each time
+
+    # Use the correct DAML field name: totalPayrollAmount (not targetTVL)
+    raw_tvl = vault.get("totalPayrollAmount") or vault.get("targetTVL") or "10000000"
+    target_tvl = Decimal(str(raw_tvl))
     proposed   = (target_tvl * Decimal("0.50")).quantize(Decimal("0.0000000001"))
-    best_rate  = max(_ORACLE["usRepoRate7d"], _ORACLE["giltsRate7d"])
+    best_rate  = max(oracle["usRepoRate7d"], oracle["giltsRate7d"])
     exp_yield  = (best_rate / Decimal("100")).quantize(Decimal("0.0000000001"))
     risk       = (
-        _ORACLE["volatilityIndex"] * Decimal("0.6")
+        oracle["volatilityIndex"] * Decimal("0.6")
         + (Decimal("1") - best_rate / Decimal("10")) * Decimal("0.4")
     ).quantize(Decimal("0.0000000001"))
 
@@ -253,8 +271,8 @@ def run_ai_inference(vault: dict[str, Any]) -> dict[str, str]:
     desc = (
         f"AI-generated 7-day Treasury Repo proposal for vault '{vault.get('name', '?')}'. "
         f"Oracle snapshot {ts}: "
-        f"US Repo={_ORACLE['usRepoRate7d']}%, SOFR={_ORACLE['sofr']}%, "
-        f"Volatility={_ORACLE['volatilityIndex']}. "
+        f"US Repo={oracle['usRepoRate7d']}%, SOFR={oracle['sofr']}%, "
+        f"Volatility={oracle['volatilityIndex']}. "
         f"Recommended allocation: ${proposed:,.2f} at {exp_yield * 100:.2f}% yield. "
         f"Risk score: {risk * 100:.0f}/100 — {verdict}"
     )
