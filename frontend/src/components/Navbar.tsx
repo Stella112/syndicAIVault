@@ -43,7 +43,7 @@ export const Navbar = ({ partyId, onLogout, activeTab, onTabChange }: NavbarProp
           <path d="M12 8v4l3 3"></path>
         </svg>
         <span style={{ fontWeight: 700, fontSize: '1.05rem', letterSpacing: '-0.01em', color: '#fff' }}>
-          Syndic <span style={{ color: 'var(--emerald-500)' }}>Spark</span>
+          SyndicAI <span style={{ color: 'var(--emerald-500)' }}>Vault</span>
         </span>
         <span className="badge badge-emerald" style={{ marginLeft: '4px', fontSize: '0.65rem' }}>BETA</span>
       </div>

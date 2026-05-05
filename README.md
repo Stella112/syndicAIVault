@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2000&auto=format&fit=crop" alt="Syndic Spark Banner" width="100%" height="220" style="object-fit: cover; border-radius: 12px;" />
+<img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2000&auto=format&fit=crop" alt="SyndicAI Vault Banner" width="100%" height="220" style="object-fit: cover; border-radius: 12px;" />
 
-# Syndic Spark
+# SyndicAI Vault
 
 **Family offices close syndication deals on Canton — without emails, spreadsheets, or counterparty risk.**
 
@@ -73,7 +73,7 @@ The result: capital sits idle longer than it should, and smaller family offices 
 ## GTM — Go-to-Market
 
 **Phase 1 — DevNet (Now):**
-Target the HackCanton ecosystem and Digital Asset's enterprise client base as design partners. Offer free access to the Syndic Spark platform on Canton DevNet in exchange for workflow feedback.
+Target the HackCanton ecosystem and Digital Asset's enterprise client base as design partners. Offer free access to the SyndicAI Vault platform on Canton DevNet in exchange for workflow feedback.
 
 **Phase 2 — Pilot (3–6 months):**
 Sign 2–3 family offices as paying design partners at a flat monthly infrastructure fee ($5–10K/month). Focus on a single asset class — US Treasury repo — to keep compliance surface minimal.
@@ -106,7 +106,7 @@ The MVP delivered for this hackathon demonstrates the complete, end-to-end workf
 
 > *"We are building the Bloomberg Terminal for private syndication — but instead of a data feed, the settlement itself happens inside the platform, privately and atomically, on Canton."*
 
-**The one-liner:** Syndic Spark is an AI-governed syndication platform that replaces off-chain email coordination with autonomous on-chain proposals and atomic DvP settlement on the Canton Network.
+**The one-liner:** SyndicAI Vault is an AI-governed syndication platform that replaces off-chain email coordination with autonomous on-chain proposals and atomic DvP settlement on the Canton Network.
 
 **Why Canton?** No other network offers sub-transaction privacy at the protocol level. Public EVM chains expose too much. Canton's DAML-based stakeholder privacy model is the only credible infrastructure for institutional-grade confidential settlement.
 
