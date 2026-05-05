@@ -16,7 +16,7 @@ interface DashboardViewProps {
 }
 
 export const DashboardView = ({
-  vaults, proposals, partyId, loading, onTabChange,
+  vaults, proposals, partyId: _partyId, loading, onTabChange,
 }: DashboardViewProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   

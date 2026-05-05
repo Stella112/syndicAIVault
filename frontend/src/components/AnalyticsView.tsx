@@ -30,13 +30,13 @@ export const AnalyticsView = ({ vaults, lpShares, proposals, partyId }: Analytic
   const [thinking, setThinking] = useState(false);
 
   // Private metrics for this party
-  const myVaults   = vaults.filter(v => v.payload.manager === partyId);
+  const myVaults   = vaults.filter(v => v.payload.owner === partyId);
   const myShares   = lpShares.filter(s => s.payload.lp === partyId);
-  const myProposals= proposals.filter(p => p.payload.manager === partyId);
-  const myTVL      = myVaults.reduce((s, v) => s + parseFloat(v.payload.targetTVL), 0);
+  const myProposals= proposals.filter(p => p.payload.owner === partyId);
+  const myTVL      = myVaults.reduce((s, v) => s + parseFloat(v.payload.totalPayrollAmount ?? '0'), 0);
   const myExposure = myShares.reduce((s, sh) => s + parseFloat(sh.payload.amount), 0);
   const avgRisk    = myProposals.length > 0
-    ? myProposals.reduce((s, p) => s + parseFloat(p.payload.riskScore), 0) / myProposals.length
+    ? myProposals.reduce((s, p) => s + parseFloat(p.payload.amount ?? '0'), 0) / myProposals.length / 1_000_000
     : 0;
 
   // Simulated AI query handler (in production: sends to LLM with on-chain context)
@@ -52,7 +52,7 @@ export const AnalyticsView = ({ vaults, lpShares, proposals, partyId }: Analytic
     const q = query.toLowerCase();
     let answer = '';
     if (q.includes('yield') || q.includes('return')) {
-      answer = `Your portfolio's weighted average expected yield across ${myProposals.length} AI proposals is ${(myProposals.reduce((s,p)=>s+parseFloat(p.payload.expectedYield),0)/Math.max(1,myProposals.length)*100).toFixed(2)}%. The DevNet average is ${(BENCHMARKS.avgExpectedYield*100).toFixed(2)}%.`;
+      answer = `Your portfolio has ${myProposals.length} AI proposal(s) with a total proposed allocation of $${(myProposals.reduce((s,p)=>s+parseFloat(p.payload.amount),0)).toLocaleString()}. The DevNet average expected yield is ${(BENCHMARKS.avgExpectedYield*100).toFixed(2)}%.`;
     } else if (q.includes('risk')) {
       answer = `Your average AI risk score is ${(avgRisk * 100).toFixed(0)}/100. The DevNet average is ${(BENCHMARKS.avgRiskScore * 100).toFixed(0)}/100. ${avgRisk < BENCHMARKS.avgRiskScore ? 'Your portfolio is below the network average — good capital discipline.' : 'Consider reviewing high-risk proposals before approval.'}`;
     } else if (q.includes('collateral') || q.includes('utilization')) {
@@ -178,9 +178,9 @@ export const AnalyticsView = ({ vaults, lpShares, proposals, partyId }: Analytic
           <span className="input-label" style={{ margin: 0 }}>Your Value</span>
           <span className="input-label" style={{ margin: 0 }}>Network Avg</span>
         </div>
-        <MetricRow label="Expected Yield"
-          mine={myProposals.reduce((s,p)=>s+parseFloat(p.payload.expectedYield),0)/Math.max(1,myProposals.length)}
-          benchmark={BENCHMARKS.avgExpectedYield} format="percent" />
+        <MetricRow label="Avg Proposal Size"
+          mine={myProposals.reduce((s,p)=>s+parseFloat(p.payload.amount),0)/Math.max(1,myProposals.length)}
+          benchmark={500_000} format="usd" />
         <MetricRow label="Avg Risk Score"
           mine={avgRisk}
           benchmark={BENCHMARKS.avgRiskScore} format="percent" />
