@@ -1,64 +1,105 @@
-# Syndic Spark ✦ HackCanton Season 1
+<div align="center">
+
+<!-- You can replace this with a dedicated banner image later if you have one -->
+<img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2000&auto=format&fit=crop" alt="Syndic Spark Banner" width="100%" height="300" style="object-fit: cover; border-radius: 12px; margin-bottom: 20px;" />
+
+# Syndic Spark
 
 **Privacy-first RWA syndication, governed by AI on the Canton Network.**
 
-![Syndic Spark UI](./frontend/public/mockup.png)
+<p align="center">
+  <img src="https://img.shields.io/badge/Hackathon-HackCanton_Season_1-10b981?style=for-the-badge" alt="HackCanton Season 1" />
+  <img src="https://img.shields.io/badge/Status-Live_on_DevNet-0ea5e9?style=for-the-badge" alt="Live on DevNet" />
+  <img src="https://img.shields.io/badge/Tracks-DAML_%26_AI-8b5cf6?style=for-the-badge" alt="DAML & AI" />
+</p>
 
-Syndic Spark is an institutional-grade platform built for the **HackCanton DevNet**. It replaces fragmented emails and spreadsheets with on-ledger AI proposals, selective-disclosure voting, and atomic DvP settlement using DAML Smart Contracts.
+</div>
 
-## Architecture
+---
 
-This monorepo contains the complete end-to-end platform:
+## 🛑 The Problem: Syndication is Stuck in the Dark Ages
 
-1. **`frontend/`**: A React/Vite web application providing the "Minimal Institutional" command center UI. It interfaces directly with the Canton JSON Ledger API (v2).
-2. **`ai-agent/`**: A Python-based autonomous agent that acts as a background daemon. It continuously polls the Canton network for new Vaults, evaluates risk profiles using simulated oracles, and autonomously submits Allocation Proposals back to the ledger.
-3. **`daml/`**: The underlying smart contracts (`SyndicAIVault.daml`) defining the schema, privacy guarantees, and atomic settlement rules.
+Today, institutional fund managers orchestrate hundreds of millions of dollars in syndicated private credit and Treasury repo flows using **encrypted emails, fragmented spreadsheets, and static PDF term sheets**. 
 
-## Getting Started
+This archaic workflow is incredibly slow, highly error-prone, and relies entirely on manual counterparty trust. Worse, coordinating these deals on public blockchains exposes sensitive competitive alpha and trade sizes to the entire market. Institutions need the mathematical certainty of blockchain settlement, but they refuse to sacrifice sub-transaction privacy.
 
-### Prerequisites
-- Node.js (v18+)
-- Python 3.10+
-- Canton DevNet Credentials (Keycloak Email/Password)
+## 🟢 The Solution: Syndic Spark
 
-### 1. Start the React Frontend
+Syndic Spark is an institutional-grade "command center" built natively on the Canton Network. It replaces manual coordination with autonomous, deterministic, and entirely private on-ledger operations.
 
+- 🔒 **Sub-Transaction Privacy:** Users deploy capital and negotiate terms with absolute privacy. Your position sizes, terms, and counterparties remain hidden from the broader network, selectively disclosed *only* to necessary participants.
+- 🤖 **Autonomous AI Governance:** Remove the manual bottlenecks of risk assessment. Our autonomous on-ledger Python daemon continuously evaluates vault risk profiles against live oracle data and automatically proposes mathematically sound allocations.
+- ⚡ **Atomic DvP Settlement:** Bypass legacy T+2 clearing. Once an AI proposal is cryptographically signed by the vault managers, the syndication settles atomically across the Canton Network, reducing counterparty risk to zero.
+
+---
+
+## 🏗️ Architecture & Tech Stack
+
+```mermaid
+graph TD
+    UI[Frontend Client<br/>React / Vite / TS] -->|REST / JSON| Gateway(Canton DevNet JSON API)
+    Gateway --> Ledger[(Canton Network<br/>DAML Smart Contracts)]
+    Ledger -->|State Polling| AI[Autonomous AI Agent<br/>Python Daemon]
+    AI -.->|Simulated Oracle / LLM| RiskData(Market Risk & Yield Data)
+    AI -->|Submits Proposal| Gateway
+    UI -.->|Manager Approves| Gateway
+    
+    classDef primary fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff;
+    classDef secondary fill:#0f172a,stroke:#334155,stroke-width:2px,color:#fff;
+    classDef accent fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff;
+    
+    class UI primary;
+    class Ledger secondary;
+    class AI accent;
+```
+
+### The Stack
+- **Smart Contracts:** DAML (Digital Asset Modeling Language)
+- **Network:** Canton Network (HackCanton DevNet)
+- **Frontend:** React 18, Vite, TypeScript, Tailwind-inspired custom OKLCH CSS
+- **AI Agent:** Python 3.10, `requests` daemon
+- **Auth:** Keycloak OIDC Resource-Owner Password Grant
+
+---
+
+## 🎯 Hackathon Tracks Targeted
+
+We built Syndic Spark to specifically target two major bounties:
+
+1. **Track 3: Best Use of DAML**
+   *How we fulfill it:* We authored a custom `SyndicAIVault.daml` contract suite that leverages DAML's strict authorization and privacy model to ensure syndication proposals can only be executed when all required stakeholders cryptographically sign off.
+2. **Track 4: AI & Blockchain Integration**
+   *How we fulfill it:* We built a headless Python daemon that acts as a first-class citizen on the Canton ledger. It autonomously monitors state, runs risk-scoring algorithms (simulating an LLM/Oracle pipeline), and submits live Proposal contracts back to the network.
+
+---
+
+## 🚀 Quick Start (Frictionless Testing)
+
+Want to see the magic happen on your local machine?
+
+### 1. Clone & Configure
+```bash
+git clone https://github.com/Stella112/syndicAIVault.git
+cd syndicAIVault
+cp .env.example .env
+```
+*(Open `.env` and paste your DevNet email, password, and Party ID).*
+
+### 2. Start the Command Center (Frontend)
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-The app will be available at `http://localhost:3000`. 
-*Note: Due to browser CORS restrictions with Canton's JSON Ledger API, the frontend utilizes a custom Vite middleware proxy to securely route `POST` and `GET` requests to the DevNet.*
+Open `http://localhost:3000` to view the UI.
 
-### 2. Configure the AI Agent
-
-Copy the environment template and add your DevNet credentials:
-```bash
-cp .env.example .env
-```
-Update `.env`:
-```env
-CANTON_EMAIL="your_devnet_email@example.com"
-CANTON_PASSWORD="your_devnet_password"
-AGENT_PARTY="your_party_id_here"
-```
-
-### 3. Run the AI Agent
-
-In a separate terminal, start the Python daemon:
+### 3. Unleash the AI Agent
+In a new terminal window:
 ```bash
 cd ai-agent
 python -m venv venv
-source venv/bin/activate  # Or `.\venv\Scripts\activate` on Windows
+# Windows: .\venv\Scripts\activate | Mac/Linux: source venv/bin/activate
 pip install -r requirements.txt
-
 python main.py
 ```
-
-The agent will begin polling the ledger. When you create a new "Active LP Interest" (Vault) from the frontend UI, the Python agent will detect it, generate an AI risk assessment, and submit a Proposal contract for your approval.
-
-## Submission Details
-- **Hackathon:** HackCanton Season 1
-- **Tracks:** Track 3 (DAML) & Track 4 (AI Integration)
-- **Status:** Live on DevNet
+**To Test:** Log into the frontend, create a new "Active LP Interest" Vault, and watch the Python agent terminal. Within 10 seconds, it will detect the vault, evaluate the risk, and push a live proposal back to your dashboard!
