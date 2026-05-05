@@ -56,9 +56,74 @@ graph TD
 ### Deployed Contracts (HackCanton DevNet)
 - **Package ID:** `6bea56f3d9a70a7fbc77f0a0ae3eb2b050996fe8cd2cfde3a3b06c90e571f428`
 - **Module:** `SyndicAIVault`
-- **Templates:**
-  - `Vault`: Represents the tokenized Real World Asset (RWA) pool and TVL constraints.
-  - `Proposal`: Represents an active AI-generated allocation proposal requiring manager cryptographic signature for execution.
+
+<details>
+<summary><b>View Smart Contract Source (DAML)</b></summary>
+
+```daml
+module SyndicAIVault where
+
+template Vault
+  with
+    owner : Party
+    vaultId : Text
+    name : Text
+    description : Text
+    createdAt : Time
+    totalPayrollAmount : Decimal
+    status : Text
+  where
+    signatory owner
+    ensure status `elem` ["ACTIVE", "PAUSED", "CLOSED"]
+
+    choice CreateProposal : ContractId Proposal
+      with
+        proposalId : Text
+        title : Text
+        description : Text
+        aiRecommendation : Text
+        amount : Decimal
+        currentDate : Time
+      controller owner
+      do
+        create Proposal with
+          vaultCid = self
+          owner = owner
+          proposalId = proposalId
+          title = title
+          description = description
+          aiRecommendation = aiRecommendation
+          amount = amount
+          status = "PENDING"
+          createdAt = currentDate
+
+template Proposal
+  with
+    vaultCid : ContractId Vault
+    owner : Party
+    proposalId : Text
+    title : Text
+    description : Text
+    aiRecommendation : Text
+    amount : Decimal
+    status : Text
+    createdAt : Time
+  where
+    signatory owner
+
+    choice Approve : ContractId Proposal
+      controller owner
+      do
+        assertMsg "Proposal must be in PENDING status to approve" (status == "PENDING")
+        create this with status = "APPROVED"
+
+    choice Reject : ContractId Proposal
+      controller owner
+      do
+        assertMsg "Proposal must be in PENDING status to reject" (status == "PENDING")
+        create this with status = "REJECTED"
+```
+</details>
 
 ### The Stack
 - **Smart Contracts:** DAML (Digital Asset Modeling Language)
