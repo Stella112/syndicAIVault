@@ -57,6 +57,12 @@ graph TD
 - **Package ID:** `6bea56f3d9a70a7fbc77f0a0ae3eb2b050996fe8cd2cfde3a3b06c90e571f428`
 - **Module:** `SyndicAIVault`
 
+**✅ Proof of Deployment (Live Vault):**
+- **Contract ID:** `00703d54c579ae9d5ff697d202ec51d9836dea93...`
+- **Name:** `SyndicAI Genesis Vault`
+- **TVL:** `$1,000,000`
+- **Status:** `ACTIVE`
+
 <details>
 <summary><b>View Smart Contract Source (DAML)</b></summary>
 
