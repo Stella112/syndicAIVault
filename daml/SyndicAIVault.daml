@@ -1,0 +1,61 @@
+module SyndicAIVault where
+
+template Vault
+  with
+    owner : Party
+    vaultId : Text
+    name : Text
+    description : Text
+    createdAt : Time
+    totalPayrollAmount : Decimal
+    status : Text
+  where
+    signatory owner
+    ensure status `elem` ["ACTIVE", "PAUSED", "CLOSED"]
+
+    choice CreateProposal : ContractId Proposal
+      with
+        proposalId : Text
+        title : Text
+        description : Text
+        aiRecommendation : Text
+        amount : Decimal
+        currentDate : Time
+      controller owner
+      do
+        create Proposal with
+          vaultCid = self
+          owner = owner
+          proposalId = proposalId
+          title = title
+          description = description
+          aiRecommendation = aiRecommendation
+          amount = amount
+          status = "PENDING"
+          createdAt = currentDate
+
+template Proposal
+  with
+    vaultCid : ContractId Vault
+    owner : Party
+    proposalId : Text
+    title : Text
+    description : Text
+    aiRecommendation : Text
+    amount : Decimal
+    status : Text
+    createdAt : Time
+  where
+    signatory owner
+
+    choice Approve : ContractId Proposal
+      controller owner
+      do
+        assertMsg "Proposal must be in PENDING status to approve" (status == "PENDING")
+        create this with status = "APPROVED"
+
+    choice Reject : ContractId Proposal
+      controller owner
+      do
+        assertMsg "Proposal must be in PENDING status to reject" (status == "PENDING")
+        create this with status = "REJECTED"

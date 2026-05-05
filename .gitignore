@@ -1,0 +1,30 @@
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Node/Vite (Frontend)
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Python (AI Agent)
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDEs and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Canton/DAML
+.daml/
+*.dar
