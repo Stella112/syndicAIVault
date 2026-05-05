@@ -17,23 +17,23 @@
 
 ---
 
-## 🛑 The Problem: Syndication is Stuck in the Dark Ages
+## The Problem: Syndication is Stuck in the Dark Ages
 
 Today, institutional fund managers orchestrate hundreds of millions of dollars in syndicated private credit and Treasury repo flows using **encrypted emails, fragmented spreadsheets, and static PDF term sheets**. 
 
 This archaic workflow is incredibly slow, highly error-prone, and relies entirely on manual counterparty trust. Worse, coordinating these deals on public blockchains exposes sensitive competitive alpha and trade sizes to the entire market. Institutions need the mathematical certainty of blockchain settlement, but they refuse to sacrifice sub-transaction privacy.
 
-## 🟢 The Solution: Syndic Spark
+## The Solution: Syndic Spark
 
 Syndic Spark is an institutional-grade "command center" built natively on the Canton Network. It replaces manual coordination with autonomous, deterministic, and entirely private on-ledger operations.
 
-- 🔒 **Sub-Transaction Privacy:** Users deploy capital and negotiate terms with absolute privacy. Your position sizes, terms, and counterparties remain hidden from the broader network, selectively disclosed *only* to necessary participants.
-- 🤖 **Autonomous AI Governance:** Remove the manual bottlenecks of risk assessment. Our autonomous on-ledger Python daemon continuously evaluates vault risk profiles against live oracle data and automatically proposes mathematically sound allocations.
-- ⚡ **Atomic DvP Settlement:** Bypass legacy T+2 clearing. Once an AI proposal is cryptographically signed by the vault managers, the syndication settles atomically across the Canton Network, reducing counterparty risk to zero.
+- **Sub-Transaction Privacy:** Users deploy capital and negotiate terms with absolute privacy. Your position sizes, terms, and counterparties remain hidden from the broader network, selectively disclosed *only* to necessary participants.
+- **Autonomous AI Governance:** Remove the manual bottlenecks of risk assessment. Our autonomous on-ledger Python daemon continuously evaluates vault risk profiles against live oracle data and automatically proposes mathematically sound allocations.
+- **Atomic DvP Settlement:** Bypass legacy T+2 clearing. Once an AI proposal is cryptographically signed by the vault managers, the syndication settles atomically across the Canton Network, reducing counterparty risk to zero.
 
 ---
 
-## 🏗️ Architecture & Tech Stack
+## Architecture & Tech Stack
 
 ```mermaid
 graph TD
@@ -53,6 +53,13 @@ graph TD
     class AI accent;
 ```
 
+### Deployed Contracts (HackCanton DevNet)
+- **Package ID:** `6bea56f3d9a70a7fbc77f0a0ae3eb2b050996fe8cd2cfde3a3b06c90e571f428`
+- **Module:** `SyndicAIVault`
+- **Templates:**
+  - `Vault`: Represents the tokenized Real World Asset (RWA) pool and TVL constraints.
+  - `Proposal`: Represents an active AI-generated allocation proposal requiring manager cryptographic signature for execution.
+
 ### The Stack
 - **Smart Contracts:** DAML (Digital Asset Modeling Language)
 - **Network:** Canton Network (HackCanton DevNet)
@@ -62,7 +69,7 @@ graph TD
 
 ---
 
-## 🎯 Hackathon Tracks Targeted
+## Hackathon Tracks Targeted
 
 We built Syndic Spark to specifically target two major bounties:
 
@@ -73,9 +80,9 @@ We built Syndic Spark to specifically target two major bounties:
 
 ---
 
-## 🚀 Quick Start (Frictionless Testing)
+## Quick Start (Frictionless Testing)
 
-Want to see the magic happen on your local machine?
+Want to see the platform operate on your local machine?
 
 ### 1. Clone & Configure
 ```bash
@@ -102,4 +109,4 @@ python -m venv venv
 pip install -r requirements.txt
 python main.py
 ```
-**To Test:** Log into the frontend, create a new "Active LP Interest" Vault, and watch the Python agent terminal. Within 10 seconds, it will detect the vault, evaluate the risk, and push a live proposal back to your dashboard!
+**To Test:** Log into the frontend, create a new "Active LP Interest" Vault, and watch the Python agent terminal. Within 10 seconds, it will detect the vault, evaluate the risk, and push a live proposal back to your dashboard for approval.
