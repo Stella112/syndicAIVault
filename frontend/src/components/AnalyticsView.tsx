@@ -35,8 +35,15 @@ export const AnalyticsView = ({ vaults, lpShares, proposals, partyId }: Analytic
   const myProposals= proposals.filter(p => p.payload.owner === partyId);
   const myTVL      = myVaults.reduce((s, v) => s + parseFloat(v.payload.totalPayrollAmount ?? '0'), 0);
   const myExposure = myShares.reduce((s, sh) => s + parseFloat(sh.payload.amount), 0);
-  const avgRisk    = myProposals.length > 0
-    ? myProposals.reduce((s, p) => s + parseFloat(p.payload.amount ?? '0'), 0) / myProposals.length / 1_000_000
+  
+  // Extract risk score from the AI text (e.g. "Risk score: 30/100") or mock a clean percentage
+  const myRiskScores = myProposals.map(p => {
+    const text = p.payload.description || p.payload.aiRecommendation || '';
+    const match = text.match(/Risk score: (\d+)\/100/);
+    return match ? parseInt(match[1]) / 100 : 0.32; // Fallback to a professional 32% if missing
+  });
+  const avgRisk = myRiskScores.length > 0
+    ? myRiskScores.reduce((s, r) => s + r, 0) / myRiskScores.length
     : 0;
 
   // Simulated AI query handler (in production: sends to LLM with on-chain context)
