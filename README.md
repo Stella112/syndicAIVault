@@ -13,6 +13,12 @@
   <img src="https://img.shields.io/badge/Tracks-DAML_%26_AI-8b5cf6?style=for-the-badge" alt="DAML & AI" />
 </p>
 
+<p align="center">
+  <a href="https://syndic-ai-vault.vercel.app">
+    <img src="https://img.shields.io/badge/🚀_View_Live_Demo-syndic--ai--vault.vercel.app-10b981?style=for-the-badge&logo=vercel" alt="Live Demo" />
+  </a>
+</p>
+
 </div>
 
 ---
